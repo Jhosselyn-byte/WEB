@@ -4,7 +4,337 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Unidad 2 - Estadística Computacional</title>
-  <link rel="stylesheet" href="css/styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #000000 0%, #0a1a0a 100%);
+      color: #0aff0a;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      background: radial-gradient(circle at center, rgba(10, 255, 10, 0.1), transparent 70%);
+    }
+
+    .logos {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 30px;
+      z-index: 2;
+    }
+
+    .logo {
+      width: 80px;
+      filter: drop-shadow(0 0 5px #0aff0a);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1);
+    }
+
+    .banner-senku {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('../assets/images/senku.png') center/cover no-repeat;
+      opacity: 0.1;
+      z-index: 0;
+      filter: blur(2px);
+    }
+
+    .glitch {
+      font-size: 2.5rem;
+      color: #0aff0a;
+      text-shadow: 0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #0aff0a;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-back {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      color: #0aff0a;
+      border: 2px solid #0aff0a;
+      border-radius: 5px;
+      text-decoration: none;
+      box-shadow: 0 0 5px #0aff0a;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-back:hover {
+      background: #0aff0a;
+      color: #000000;
+      box-shadow: 0 0 15px #0aff0a;
+    }
+
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    .contenido-wrapper {
+      background: rgba(10, 255, 10, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      border: 1px solid rgba(10, 255, 10, 0.2);
+      box-shadow: 0 10px 50px rgba(10, 255, 10, 0.1);
+    }
+
+    .trabajos-titulo {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .trabajos-titulo h2 {
+      font-size: 2.5rem;
+      color: #0aff0a;
+      text-shadow: 0 0 20px #0aff0a;
+      margin: 0;
+    }
+
+    .trabajos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      padding: 1rem;
+    }
+
+    .trabajo-card {
+      background: linear-gradient(145deg, rgba(10, 255, 10, 0.1), rgba(10, 255, 10, 0.05));
+      border: 2px solid rgba(10, 255, 10, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trabajo-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0aff0a, transparent);
+      opacity: 0.8;
+    }
+
+    .trabajo-card:hover {
+      transform: translateY(-8px);
+      border-color: #0aff0a;
+      background: linear-gradient(145deg, rgba(10, 255, 10, 0.18), rgba(10, 255, 10, 0.1));
+      box-shadow: 0 15px 40px rgba(10, 255, 10, 0.3);
+    }
+
+    .trabajo-titulo {
+      color: #0aff0a;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0 0 1.5rem 0;
+      line-height: 1.4;
+    }
+
+    .badges-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .badge {
+      background: #0aff0a;
+      color: #000000;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nivel-badge {
+      display: inline-block;
+      background: rgba(10, 255, 10, 0.2);
+      color: #0aff0a;
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border: 1px solid rgba(10, 255, 10, 0.5);
+      margin-bottom: 1.2rem;
+    }
+
+    .trabajo-descripcion {
+      color: rgba(10, 255, 10, 0.85);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin: 1.2rem 0;
+      min-height: 80px;
+    }
+
+    .ver-trabajo-btn {
+      display: inline-block;
+      background: transparent;
+      color: #0aff0a;
+      border: 2px solid #0aff0a;
+      padding: 0.7rem 2rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .ver-trabajo-btn:hover {
+      background: #0aff0a;
+      color: #000000;
+      transform: translateX(5px);
+      box-shadow: 0 5px 20px rgba(10, 255, 10, 0.4);
+    }
+
+    .ver-trabajo-btn::after {
+      content: ' →';
+      font-weight: bold;
+    }
+
+    .agregar-card {
+      background: rgba(10, 255, 10, 0.03);
+      border: 3px dashed rgba(10, 255, 10, 0.4);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-height: 350px;
+    }
+
+    .agregar-card:hover {
+      background: rgba(10, 255, 10, 0.1);
+      border-color: #0aff0a;
+      border-style: solid;
+      transform: scale(1.02);
+    }
+
+    .agregar-icono {
+      font-size: 4rem;
+      color: #0aff0a;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .agregar-texto {
+      color: #0aff0a;
+      font-size: 1.1rem;
+      font-weight: bold;
+      opacity: 0.8;
+    }
+
+    .footer-unidad {
+      text-align: center;
+      margin-top: 4rem;
+      padding: 2rem;
+      background: rgba(10, 255, 10, 0.05);
+      border-radius: 15px;
+      border: 1px solid rgba(10, 255, 10, 0.3);
+    }
+
+    .footer-unidad p {
+      color: #0aff0a;
+      font-size: 1rem;
+      margin: 0;
+      text-shadow: 0 0 10px rgba(10, 255, 10, 0.3);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #0aff0a;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .trabajos-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .trabajos-titulo h2 {
+        font-size: 1.8rem;
+      }
+
+      .contenido-wrapper {
+        padding: 2rem 1rem;
+      }
+
+      .glitch {
+        font-size: 2rem;
+      }
+
+      .logo {
+        width: 60px;
+      }
+
+      .logos {
+        padding: 0 15px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="particles"></div>
@@ -14,46 +344,95 @@
       <img src="assets/images/logo-izquierdo.png" alt="UNAP" class="logo left"/>
       <img src="assets/images/logo-derecho.png" alt="Facultad" class="logo right"/>
     </div>
+    <div class="banner-senku"></div>
     <h1 class="glitch" data-text="Unidad 2">Unidad 2</h1>
-    <p class="subtitle">Inferencia y Simulación Monte Carlo</p>
+    <p class="subtitle">Aplicación del Bootstrap y Métodos Avanzados</p>
+    <a href="index.html" class="btn-back">Volver al Inicio</a>
   </header>
 
-  <section id="contenido" class="fade-in">
-    <div class="unidad-card">
-      <h2>🎲 Contenido de la Unidad</h2>
-      <p>En esta unidad se abordan técnicas avanzadas, incluyendo:</p>
-      <ul>
-        <li>Inferencia estadística bayesiana</li>
-        <li>Métodos de Monte Carlo</li>
-        <li>Simulaciones para modelado probabilístico</li>
-        <li>Aplicaciones en datos reales</li>
-      </ul>
-    </div>
-    <div class="unidad-card">
-      <h2>🧮 Ejemplo Práctico</h2>
-      <p>Simulación Monte Carlo para estimar π:</p>
-      <pre>
-import numpy as np
-import matplotlib.pyplot as plt
+  <section>
+    <div class="contenido-wrapper">
+      <div class="trabajos-titulo">
+        <h2>Mis Trabajos</h2>
+      </div>
 
-n = 10000
-x = np.random.uniform(-1, 1, n)
-y = np.random.uniform(-1, 1, n)
-inside_circle = (x**2 + y**2) <= 1
-pi_estimate = 4 * np.sum(inside_circle) / n
-print(f"Estimación de π: {pi_estimate}")
-plt.scatter(x[inside_circle], y[inside_circle], s=1, c='blue')
-plt.scatter(x[~inside_circle], y[~inside_circle], s=1, c='red')
-plt.show()
-      </pre>
-      <a class="btn-neon" href="index.html">Volver al Portafolio</a>
+      <div class="trabajos-grid">
+        <!-- Trabajo 1 -->
+        <div class="trabajo-card">
+          <h3 class="trabajo-titulo">Actividad 1: Análisis de Heterogeneidad en Meta-Análisis</h3>
+          <div class="badges-container">
+            <span class="badge">Meta-Análisis</span>
+            <span class="badge">Heterogeneidad</span>
+          </div>
+          <span class="nivel-badge">Básico</span>
+          <p class="trabajo-descripcion">
+            Implementación de tres estadísticas fundamentales para evaluación de heterogeneidad: Q de Cochran, I² de Higgins y Tau-cuadrado en meta-análisis.
+          </p>
+          <a href="tarea1.html" class="ver-trabajo-btn">Ver Trabajo</a>
+        </div>
+
+        <!-- Agregar Nuevo Trabajo -->
+        <div class="agregar-card">
+          <div class="agregar-icono">+</div>
+          <div class="agregar-texto">Agregar Nuevo Trabajo</div>
+        </div>
+      </div>
+
+      <div class="footer-unidad">
+        <p>Unidad 2 - Briggitte Jhosselyn Vilca Chambilla</p>
+      </div>
     </div>
   </section>
 
   <footer>
-    <p>© 2025 - Hecho con 💙 y ciencia | Inspirado en <strong>Dr. Stone</strong></p>
+    <p>© 2025 - Estadística Computacional | Unidad 2</p>
   </footer>
 
-  <script src="js/script.js"></script>
+  <script>
+    const particlesContainer = document.getElementById('particles');
+    let particleCount = 0;
+    const maxParticles = 80;
+
+    function createParticle() {
+      if (particleCount >= maxParticles) return;
+      
+      const particle = document.createElement('div');
+      particle.style.position = 'absolute';
+      particle.style.width = Math.random() * 3 + 1 + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.background = '#0aff0a';
+      particle.style.boxShadow = '0 0 5px #0aff0a';
+      particle.style.top = Math.random() * 100 + 'vh';
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.pointerEvents = 'none';
+      particle.style.borderRadius = '50%';
+      particlesContainer.appendChild(particle);
+      particleCount++;
+
+      let duration = Math.random() * 4 + 2;
+      let offsetX = Math.random() * 100 - 50;
+      
+      particle.style.animation = `float ${duration}s linear forwards`;
+      
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @keyframes float {
+          0% { opacity: 1; }
+          100% {
+            transform: translateY(-120vh) translateX(${offsetX}px) rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+
+      setTimeout(() => {
+        particle.remove();
+        particleCount--;
+      }, duration * 1000);
+    }
+
+    setInterval(createParticle, 150);
+  </script>
 </body>
 </html>

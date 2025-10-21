@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trabajo 1 - Análisis de Heterogeneidad en Meta-Análisis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #000000 0%, #0a1a0a 100%);
+      color: #0aff0a;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      background: radial-gradient(circle at center, rgba(10, 255, 10, 0.1), transparent 70%);
+    }
+
+    .logos {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 30px;
+      z-index: 2;
+    }
+
+    .logo {
+      width: 80px;
+      filter: drop-shadow(0 0 5px #0aff0a);
+    }
+
+    .glitch {
+      font-size: 2.5rem;
+      color: #0aff0a;
+      text-shadow: 0 0 5px #0aff0a, 0 0 10px #0aff0a;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #0aff0a;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    .btn-back {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      color: #0aff0a;
+      border: 2px solid #0aff0a;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .btn-back:hover {
+      background: #0aff0a;
+      color: #000000;
+      box-shadow: 0 0 15px #0aff0a;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem 4rem;
+    }
+
+    .info-header {
+      background: rgba(10, 255, 10, 0.08);
+      border: 2px solid rgba(10, 255, 10, 0.3);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .info-item {
+      background: rgba(10, 255, 10, 0.05);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(10, 255, 10, 0.2);
+    }
+
+    .info-label {
+      font-weight: bold;
+      color: #0aff0a;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .info-value {
+      color: rgba(10, 255, 10, 0.9);
+      font-size: 0.95rem;
+    }
+
+    .content-section {
+      background: rgba(10, 255, 10, 0.08);
+      border: 2px solid rgba(10, 255, 10, 0.3);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .content-section h2 {
+      color: #0aff0a;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid rgba(10, 255, 10, 0.3);
+      padding-bottom: 0.5rem;
+    }
+
+    .content-section h3 {
+      color: #0aff0a;
+      font-size: 1.3rem;
+      margin: 1.5rem 0 1rem;
+    }
+
+    .content-section p {
+      color: rgba(10, 255, 10, 0.85);
+      margin-bottom: 1rem;
+      text-align: justify;
+      line-height: 1.8;
+    }
+
+    .formula-box {
+      background: rgba(0, 0, 0, 0.5);
+      border-left: 4px solid #0aff0a;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+
+    .formula {
+      font-family: 'Courier New', monospace;
+      color: #0aff0a;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .code-block {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid #0aff0a;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      color: #0aff0a;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .variables-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .variables-list li {
+      background: rgba(10, 255, 10, 0.05);
+      padding: 0.8rem 1rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      border-left: 3px solid #0aff0a;
+    }
+
+    .variables-list strong {
+      color: #0aff0a;
+      font-weight: bold;
+    }
+
+    .resultados-box {
+      background: linear-gradient(145deg, rgba(10, 255, 10, 0.15), rgba(10, 255, 10, 0.08));
+      border: 2px solid #0aff0a;
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+    }
+
+    .resultado-item {
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-bottom: 1px solid rgba(10, 255, 10, 0.2);
+    }
+
+    .resultado-item:last-child {
+      border-bottom: none;
+    }
+
+    .resultado-label {
+      font-weight: bold;
+      color: #0aff0a;
+      display: inline-block;
+      min-width: 200px;
+    }
+
+    .resultado-value {
+      color: rgba(10, 255, 10, 0.9);
+    }
+
+    .referencias {
+      background: rgba(10, 255, 10, 0.05);
+      border-left: 3px solid #0aff0a;
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+      border-radius: 5px;
+    }
+
+    .referencias p {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .downloads-section {
+      background: rgba(10, 255, 10, 0.08);
+      border: 2px solid rgba(10, 255, 10, 0.3);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .downloads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .download-card {
+      background: linear-gradient(145deg, rgba(10, 255, 10, 0.1), rgba(10, 255, 10, 0.05));
+      border: 2px solid rgba(10, 255, 10, 0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .download-card:hover {
+      transform: translateY(-5px);
+      border-color: #0aff0a;
+      box-shadow: 0 10px 30px rgba(10, 255, 10, 0.3);
+    }
+
+    .download-icon {
+      font-size: 3rem;
+      color: #0aff0a;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .download-title {
+      color: #0aff0a;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .download-description {
+      color: rgba(10, 255, 10, 0.7);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+
+    .download-btn {
+      display: inline-block;
+      background: transparent;
+      color: #0aff0a;
+      border: 2px solid #0aff0a;
+      padding: 0.7rem 2rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .download-btn:hover {
+      background: #0aff0a;
+      color: #000000;
+      box-shadow: 0 5px 20px rgba(10, 255, 10, 0.4);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem 3rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .downloads-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .glitch {
+        font-size: 1.8rem;
+      }
+
+      .content-section {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles"></div>
+
+  <header>
+    <div class="logos">
+      <img src="assets/images/logo-izquierdo.png" alt="UNAP" class="logo left"/>
+      <img src="assets/images/logo-derecho.png" alt="Facultad" class="logo right"/>
+    </div>
+    <h1 class="glitch">Actividad N° 1</h1>
+    <p class="subtitle">Análisis de Heterogeneidad en Meta-Análisis</p>
+    <a href="unidad2.html" class="btn-back">Volver a Unidad 2</a>
+  </header>
+
+  <div class="container">
+    <!-- Información del trabajo -->
+    <div class="info-header">
+      <h2 style="color: #0aff0a; margin-bottom: 1rem;">Información del Trabajo</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Estudiante</div>
+          <div class="info-value">Briggitte Jhosselyn Vilca Chambilla</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Código</div>
+          <div class="info-value">230307</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Docente</div>
+          <div class="info-value">Ing. Fred Torres Cruz</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Fecha</div>
+          <div class="info-value">Octubre 2025</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Introducción -->
+    <div class="content-section">
+      <h2>Introducción</h2>
+      <p>
+        En la síntesis cuantitativa de estudios mediante meta-análisis, la <strong>heterogeneidad</strong> se refiere a la variabilidad entre los resultados de diferentes estudios más allá de lo esperado por el azar. Este caso práctico implementa tres estadísticas fundamentales para su evaluación: Q de Cochran, I² de Higgins y Tau-cuadrado (τ²).
+      </p>
+    </div>
+
+    <!-- Marco Teórico -->
+    <div class="content-section">
+      <h2>Marco Teórico</h2>
+      
+      <h3>Q de Cochran</h3>
+      <p>Prueba la hipótesis nula de que todos los estudios comparten un tamaño del efecto común. Se calcula como:</p>
+      <div class="formula-box">
+        <div class="formula">
+          Q = Σ<sub>k=1</sub><sup>K</sup> w<sub>k</sub>(θ<sub>k</sub> - θ̂)<sup>2</sup>
+        </div>
+      </div>
+
+      <h3>I² de Higgins</h3>
+      <p>Cuantifica el porcentaje de variabilidad total atribuible a heterogeneidad:</p>
+      <div class="formula-box">
+        <div class="formula">
+          I² = [(Q - (K - 1)) / Q] × 100%
+        </div>
+      </div>
+
+      <h3>Tau-cuadrado (τ²)</h3>
+      <p>Representa la varianza de los efectos verdaderos entre estudios (método DerSimonian-Laird):</p>
+      <div class="formula-box">
+        <div class="formula">
+          τ² = [Q - (K - 1)] / C<br>
+          donde C = Σw<sub>k</sub> - (Σw<sub>k</sub>²) / Σw<sub>k</sub>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variables -->
+    <div class="content-section">
+      <h2>Descripción de Variables</h2>
+      <ul class="variables-list">
+        <li><strong>efectos (yi):</strong> Vector numérico con los tamaños de efecto estimados de cada estudio</li>
+        <li><strong>varianzas (vi):</strong> Vector numérico con las varianzas muestrales de cada tamaño de efecto</li>
+        <li><strong>pesos (w):</strong> Calculados como el inverso de las varianzas (1/vi), representan la precisión de cada estudio</li>
+        <li><strong>efecto_global:</strong> Media ponderada de los tamaños de efecto individuales</li>
+        <li><strong>Q:</strong> Estadístico de Cochran, sigue distribución χ² con K-1 grados de libertad</li>
+        <li><strong>I²:</strong> Proporción de heterogeneidad, expresada en porcentaje (0-100%)</li>
+        <li><strong>tau²:</strong> Varianza entre estudios, en las mismas unidades que el tamaño del efecto al cuadrado</li>
+      </ul>
+    </div>
+
+    <!-- Código en R -->
+    <div class="content-section">
+      <h2>Implementación en R</h2>
+      
+      <h3>Función Personalizada para Calcular Heterogeneidad</h3>
+      <div class="code-block">
+        <pre>
+# Función para calcular medidas de heterogeneidad
+calcular_heterogeneidad <- function(efectos, varianzas) {
+  # Número de estudios
+  k <- length(efectos)
+  
+  # Pesos (inverso de varianzas)
+  pesos <- 1 / varianzas
+  
+  # Efecto global ponderado
+  efecto_global <- sum(pesos * efectos) / sum(pesos)
+  
+  # Estadístico Q de Cochran
+  Q <- sum(pesos * (efectos - efecto_global)^2)
+  
+  # I-cuadrado de Higgins
+  I2 <- ifelse(Q > (k-1), 
+               ((Q - (k-1)) / Q) * 100, 0)
+  
+  # Constante C para tau-cuadrado
+  C <- sum(pesos) - (sum(pesos^2) / sum(pesos))
+  
+  # Tau-cuadrado (DerSimonian-Laird)
+  tau2 <- ifelse(Q > (k-1), 
+                 (Q - (k-1)) / C, 0)
+  
+  # Valor p de Q (chi-cuadrado con k-1 gl)
+  p_valor <- pchisq(Q, df = k-1, lower.tail = FALSE)
+  
+  # Retornar resultados
+  return(list(
+    efecto_global = efecto_global,
+    Q = Q,
+    gl = k-1,
+    p_valor = p_valor,
+    I2 = I2,
+    tau2 = tau2
+  ))
+}
+
+# Ejemplo práctico: Meta-análisis de efectividad de terapia
+efectos <- c(0.8, 1.2, 0.5, 1.4)
+varianzas <- c(0.1, 0.125, 0.083, 0.111)
+
+resultados <- calcular_heterogeneidad(efectos, varianzas)
+
+# Imprimir resultados
+cat("\n=== RESULTADOS DEL ANALISIS DE HETEROGENEIDAD ===\n")
+cat("Efecto global ponderado:", round(resultados$efecto_global, 3), "\n")
+cat("Q de Cochran:", round(resultados$Q, 3), "\n")
+cat("Grados de libertad:", resultados$gl, "\n")
+cat("Valor p:", round(resultados$p_valor, 4), "\n")
+cat("I-cuadrado:", round(resultados$I2, 1), "%\n")
+cat("Tau-cuadrado:", round(resultados$tau2, 4), "\n")</pre>
+      </div>
+
+      <h3>Meta-análisis con Paquete Metafor</h3>
+      <div class="code-block">
+        <pre>
+# Instalar y cargar paquete metafor
+install.packages("metafor")
+library(metafor)
+
+# Crear conjunto de datos
+datos_estudios <- data.frame(
+  estudio = paste("Estudio", LETTERS[1:6]),
+  yi = c(0.45, 0.68, 0.29, 0.55, 0.12, 0.78),
+  vi = c(0.05, 0.08, 0.03, 0.06, 0.04, 0.07)
+)
+
+# Meta-análisis de efectos aleatorios (método DerSimonian-Laird)
+resultado <- rma(yi = yi, vi = vi,
+                 data = datos_estudios,
+                 method = "DL")
+
+# Imprimir resultados completos
+print(resultado)
+
+# Crear forest plot
+forest(resultado,
+       main = "Forest Plot - Meta-Análisis de Efectos Aleatorios",
+       xlab = "Tamaño del Efecto",
+       slab = datos_estudios$estudio)</pre>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="content-section">
+      <h2>Resultados</h2>
+      <div class="resultados-box">
+        <h3 style="color: #0aff0a; margin-bottom: 1rem;">Análisis de 4 Estudios sobre Efectividad de Terapia</h3>
+        <div class="resultado-item">
+          <span class="resultado-label">Efecto global ponderado:</span>
+          <span class="resultado-value">0.928</span>
+        </div>
+        <div class="resultado-item">
+          <span class="resultado-label">Q de Cochran:</span>
+          <span class="resultado-value">4.959 (gl = 3, p = 0.175)</span>
+        </div>
+        <div class="resultado-item">
+          <span class="resultado-label">I²:</span>
+          <span class="resultado-value">39.5%</span>
+        </div>
+        <div class="resultado-item">
+          <span class="resultado-label">τ²:</span>
+          <span class="resultado-value">0.0675</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interpretación -->
+    <div class="content-section">
+      <h2>Interpretación y Decisión</h2>
+      <p>
+        Los resultados del análisis de heterogeneidad revelan que, si bien el estadístico Q de Cochran no alcanzó significancia estadística (Q = 4.959, p = 0.175), indicando que no hay evidencia suficiente para rechazar la hipótesis de homogeneidad entre estudios, el coeficiente I² de Higgins mostró un valor de <strong>39.5%</strong>, situándose en el límite superior de heterogeneidad posiblemente no importante según las directrices de la Colaboración Cochrane.
+      </p>
+      <p>
+        La varianza entre efectos verdaderos estimada (τ² = 0.0675) sugiere cierta variabilidad real en los tamaños de efecto más allá del error de muestreo. Técnicamente, dado que I² se aproxima al 40% y considerando que el estadístico Q tiene baja potencia con pocos estudios (K = 4), se recomienda aplicar un <strong>modelo de efectos aleatorios</strong> en lugar del modelo de efectos fijos.
+      </p>
+      <p>
+        Esta decisión es conservadora y apropiada, ya que permite incorporar la incertidumbre adicional derivada de la heterogeneidad observada, proporcionando intervalos de confianza más amplios y conclusiones más robustas. El efecto global ponderado de 0.928 debe interpretarse considerando esta variabilidad entre estudios.
+      </p>
+    </div>
+
+    <!-- Referencias -->
+    <div class="content-section">
+      <h2>Referencias</h2>
+      <div class="referencias">
+        <p><strong>Cochran, W. G.</strong> (1954). The combination of estimates from different experiments. <em>Biometrics</em>, 10(1), 101-129.</p>
+        <p><strong>DerSimonian, R., & Laird, N.</strong> (1986). Meta-analysis in clinical trials. <em>Controlled Clinical Trials</em>, 7(3), 177-188.</p>
+        <p><strong>Higgins, J. P., & Thompson, S. G.</strong> (2002). Quantifying heterogeneity in a meta-analysis. <em>Statistics in Medicine</em>, 21(11), 1539-1558.</p>
+        <p><strong>Viechtbauer, W.</strong> (2010). Conducting meta-analyses in R with the metafor package. <em>Journal of Statistical Software</em>, 36(3), 1-48.</p>
+      </div>
+    </div>
+
+    <!-- Descargas -->
+    <div class="downloads-section">
+      <h2 style="color: #0aff0a; margin-bottom: 1rem;">Descargas</h2>
+      <div class="downloads-grid">
+        <!-- Función Personalizada -->
+        <div class="download-card">
+          <span class="download-icon">{ }</span>
+          <div class="download-title">Función Personalizada</div>
+          <div class="download-description">Script R con función calcular_heterogeneidad</div>
+          <a href="archivos/Meta.r" class="download-btn" download>Descargar .R</a>
+        </div>
+
+        <!-- Paquete Metafor -->
+        <div class="download-card">
+          <span class="download-icon">{ }</span>
+          <div class="download-title">Código con Metafor</div>
+          <div class="download-description">Script R usando el paquete metafor y forest plot</div>
+          <a href="archivos/conmeta.R" class="download-btn" download>Descargar .R</a>
+        </div>
+
+        <!-- PDF -->
+        <div class="download-card">
+          <span class="download-icon">≡</span>
+          <div class="download-title">Documento PDF</div>
+          <div class="download-description">Informe completo del análisis en formato PDF</div>
+          <a href="archivos/comp.pdf" class="download-btn" download>Descargar PDF</a>
+        </div>
+
+        <!-- Repositorio -->
+        <div class="download-card">
+          <span class="download-icon">⌘</span>
+          <div class="download-title">Repositorio GitHub</div>
+          <div class="download-description">Accede al código fuente y datos del proyecto</div>
+          <a href="https://github.com/Jhosselyn-byte/Estad-sticaComputacional/tree/main/Trabajo1-SegundaUnidad" class="download-btn" target="_blank">Ver Repositorio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Crear partículas animadas
+    const particlesContainer = document.getElementById('particles');
+    let particleCount = 0;
+    const maxParticles = 60;
+
+    function createParticle() {
+      if (particleCount >= maxParticles) return;
+      
+      const particle = document.createElement('div');
+      particle.style.position = 'absolute';
+      particle.style.width = Math.random() * 3 + 1 + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.background = '#0aff0a';
+      particle.style.boxShadow = '0 0 5px #0aff0a';
+      particle.style.top = Math.random() * 100 + 'vh';
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.pointerEvents = 'none';
+      particle.style.borderRadius = '50%';
+      particlesContainer.appendChild(particle);
+      particleCount++;
+
+      let duration = Math.random() * 4 + 2;
+      let offsetX = Math.random() * 100 - 50;
+      
+      particle.style.animation = `float ${duration}s linear forwards`;
+      
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @keyframes float {
+          0% { opacity: 1; }
+          100% {
+            transform: translateY(-120vh) translateX(${offsetX}px) rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+
+      setTimeout(() => {
+        particle.remove();
+        particleCount--;
+      }, duration * 1000);
+    }
+
+    setInterval(createParticle, 200);
+  </script>
+</body>
+</html>
